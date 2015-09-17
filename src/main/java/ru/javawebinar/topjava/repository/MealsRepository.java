@@ -9,4 +9,7 @@ import java.util.List;
  */
 public interface MealsRepository {
     List<UserMeal> getAllMeals();
+    UserMeal addOrUpdateUserMeal(UserMeal userMeal);
+    UserMeal deleteUserMealById(int id);
+    UserMeal getUserMealById(int id);
 }

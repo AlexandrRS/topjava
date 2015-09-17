@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExceed;
 import ru.javawebinar.topjava.repository.MealsRepository;
 import ru.javawebinar.topjava.repository.MealsRepositoryImpl;
@@ -16,5 +17,25 @@ public class UserMealServiceImpl implements UserMealService {
     @Override
     public List<UserMealWithExceed> getAllUserMealsWithExceed() {
         return UserMealsUtil.getFilteredMealsWithExceeded(mealsRepository.getAllMeals(), LocalTime.MIN, LocalTime.MAX, 2000);
+    }
+
+    @Override
+    public UserMeal addUserMeal(UserMeal userMeal) {
+        return mealsRepository.addOrUpdateUserMeal(userMeal);
+    }
+
+    @Override
+    public UserMeal deleteUserMealById(int id) {
+        return mealsRepository.deleteUserMealById(id);
+    }
+
+    @Override
+    public UserMeal getUserMealById(int id) {
+        return mealsRepository.getUserMealById(id);
+    }
+
+    @Override
+    public UserMeal updateUserMeal(UserMeal userMeal) {
+        return mealsRepository.addOrUpdateUserMeal(userMeal);
     }
 }

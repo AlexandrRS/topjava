@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExceed;
 
 import java.util.List;
@@ -9,4 +10,8 @@ import java.util.List;
  */
 public interface UserMealService {
     List<UserMealWithExceed> getAllUserMealsWithExceed();
+    UserMeal addUserMeal(UserMeal userMeal);
+    UserMeal deleteUserMealById(int id);
+    UserMeal getUserMealById(int id);
+    UserMeal updateUserMeal(UserMeal userMeal);
 }

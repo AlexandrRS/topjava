@@ -2,54 +2,23 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
     <head>
-        <title>Meal list</title>
+        <title>Edit meal</title>
     </head>
     <body>
-        <a href="/topjava">index</a>&nbsp;|&nbsp;<a href="users">userList</a>&nbsp;|&nbsp;<a href="meals">mealList</a>
-        <h2>Meal list</h2>
-        <form method="POST" commandName="addMeal" action="${pageContext.request.contextPath}/meals">
+        <a href="${pageContext.request.contextPath}">index</a>&nbsp;|&nbsp;<a href="users">userList</a>&nbsp;|&nbsp;<a href="meals">mealList</a>
+        <h2>Edit meal</h2>
+        <form method="POST" action="${pageContext.request.contextPath}/meals?id=${userMeal.id}&operation=update">
             <table>
                 <tbody>
                 <tr>
-                    <td>date:<input type="datetime-local" name="date"></td>
-                    <td>desc:<input type="text" name="description"/></td>
-                    <td>calories:<input type="number" name="calories"/></td>
-                    <td><input type="submit" value="add" /></td>
+                    <td>date:<input type="datetime-local" name="date" value="${userMeal.dateTime}"/></td>
+                    <td>desc:<input type="text" name="description" value="${userMeal.description}"/></td>
+                    <td>calories:<input type="number" name="calories" value="${userMeal.calories}"/></td>
+                    <td>id:<input type="number" name="calories" value="${userMeal.id}"/></td>
+                    <td><input type="text" name="id" value="${userMeal.id}" hidden/><input type="submit" value="update" /></td>
                 </tr>
                 </tbody>
             </table>
         </form>
-        <table>
-            <thead align="left">
-                <tr>
-                    <th width="10%">дата</th>
-                    <th width="15%">время</th>
-                    <th width="10%">описание</th>
-                    <th width="10%">калории</th>
-                    <th width="10%">перебор?</th>
-                    <th width="10%">операции</th>
-                </tr>
-            </thead>
-                <tbody>
-                    <c:forEach items="${mealList}" var="meal">
-                        <c:choose>
-                            <c:when test="${meal.exceed eq 'true'}">
-                                <tr style="color: red">
-                            </c:when>
-                            <c:otherwise>
-                                <tr style="color: green">
-                            </c:otherwise>
-                        </c:choose>
-                            <td>${meal.localDate}</td>
-                            <td>${meal.localTime}</td>
-                            <td>${meal.description}</td>
-                            <td>${meal.calories}</td>
-                            <td>${meal.exceed}</td>
-                            <td><a href="${pageContext.request.contextPath}/${meal.id}/edit.html">edit</a>&nbsp;|
-                                <a href="${pageContext.request.contextPath}/${meal.id}/delete.html">delete</a><br/></td>
-                        </tr>
-                    </c:forEach>
-                </tbody>
-        </table>
     </body>
 </html>

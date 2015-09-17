@@ -13,4 +13,19 @@ public class MealsRepositoryImpl implements MealsRepository{
     public List<UserMeal> getAllMeals() {
         return dataSource.getUserMeals();
     }
+
+    @Override
+    public UserMeal addOrUpdateUserMeal(UserMeal userMeal) {
+        return dataSource.addOrUpdateUserMeal(userMeal);
+    }
+
+    @Override
+    public UserMeal deleteUserMealById(int id) {
+        return dataSource.deleteUserMealById(id);
+    }
+
+    @Override
+    public UserMeal getUserMealById(int id) {
+        return dataSource.getUserMealById(id);
+    }
 }

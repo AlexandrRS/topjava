@@ -8,15 +8,15 @@ import java.time.LocalDateTime;
  */
 public class UserMeal {
     protected final LocalDateTime dateTime;
-
     protected final String description;
-
     protected final int calories;
+    protected final int id;
 
-    public UserMeal(LocalDateTime dateTime, String description, int calories) {
+    public UserMeal(LocalDateTime dateTime, String description, int calories, int id) {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
+        this.id = id;
     }
 
     public LocalDateTime getDateTime() {
@@ -29,5 +29,13 @@ public class UserMeal {
 
     public int getCalories() {
         return calories;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public UserMeal clone(int id) {
+        return new UserMeal(dateTime, description, calories, id);
     }
 }
