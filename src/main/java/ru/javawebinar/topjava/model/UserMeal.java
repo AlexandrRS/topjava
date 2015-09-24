@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 public class UserMeal {
     protected Integer id;
 
+    protected Integer ownerId;
+
     protected final LocalDateTime dateTime;
 
     protected final String description;
@@ -24,6 +26,14 @@ public class UserMeal {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
+    }
+
+    public Integer getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Integer ownerId) {
+        this.ownerId = ownerId;
     }
 
     public void setId(int id) {
