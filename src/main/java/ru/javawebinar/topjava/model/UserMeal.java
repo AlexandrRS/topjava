@@ -1,20 +1,27 @@
 package ru.javawebinar.topjava.model;
 
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
  * GKislin
  * 11.01.2015.
  */
+@Entity
+@Table(name = "meals")
 public class UserMeal extends BaseEntity {
 
+    @Column(name = "date_time")
+    @NotEmpty
+    //@Convert(converter = LocalDateTimePersistenceConverter.class)
     protected LocalDateTime dateTime;
-
+    @Column(name = "description")
     protected String description;
-
+    @Column(name = "calories")
     protected int calories;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -31,6 +38,13 @@ public class UserMeal extends BaseEntity {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
+    }
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setId(int id) {
