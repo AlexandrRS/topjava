@@ -1,25 +1,27 @@
 package ru.javawebinar.topjava.service;
 
+import org.hibernate.LazyInitializationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.UserTestData.*;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
-import static ru.javawebinar.topjava.Profiles.POSTGRES;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 @ContextConfiguration({
@@ -28,8 +30,8 @@ import static ru.javawebinar.topjava.UserTestData.*;
 })
 @RunWith(SpringJUnit4ClassRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@ActiveProfiles(POSTGRES)
-public class UserServiceTest {
+
+public abstract class BaseUserServiceTest {
 
     @Autowired
     protected UserService service;
@@ -63,15 +65,29 @@ public class UserServiceTest {
         service.delete(1);
     }
 
-    @Test
+    @Test(expected = LazyInitializationException.class)
     public void testGet() throws Exception {
         User user = service.get(USER_ID);
         MATCHER.assertEquals(USER, user);
+        user.getUserMeals().get(0);
+    }
+
+    @Test
+    public void testGetWithMeals() throws Exception {
+        User user = service.getWithMeals(USER_ID);
+        List<UserMeal> userMeals = user.getUserMeals();
+        MATCHER.assertEquals(USER, user);
+        MealTestData.MATCHER.assertCollectionEquals(userMeals, MealTestData.USER_MEALS);
     }
 
     @Test(expected = NotFoundException.class)
     public void testGetNotFound() throws Exception {
         service.get(1);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void testGetWitMealsNotFound() throws Exception {
+        service.getWithMeals(1);
     }
 
     @Test
@@ -95,4 +111,5 @@ public class UserServiceTest {
         service.update(updated.asUser());
         MATCHER.assertEquals(updated, service.get(USER_ID));
     }
+
 }

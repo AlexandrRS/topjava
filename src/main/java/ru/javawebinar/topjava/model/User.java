@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -54,6 +55,16 @@ public class User extends NamedEntity {
     @Column(name = "calories_per_day", columnDefinition = "default 2000")
     @Digits(fraction = 0, integer = 4)
     protected int caloriesPerDay = DEFAULT_CALORIES_PER_DAY;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    protected List<UserMeal> userMeals;
+
+    public List<UserMeal> getUserMeals() {
+        return userMeals;
+    }
+
+    public void setUserMeals(List<UserMeal> userMeals) {
+        this.userMeals = userMeals;
+    }
 
     public User() {
     }

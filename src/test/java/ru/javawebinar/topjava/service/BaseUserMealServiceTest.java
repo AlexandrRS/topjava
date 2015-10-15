@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import org.hibernate.LazyInitializationException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -7,13 +8,13 @@ import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ru.javawebinar.topjava.LoggerWrapper;
 import ru.javawebinar.topjava.MealTestData;
+import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -23,7 +24,7 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static ru.javawebinar.topjava.MealTestData.*;
-import static ru.javawebinar.topjava.Profiles.POSTGRES;
+import static ru.javawebinar.topjava.UserTestData.ADMIN;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
@@ -33,9 +34,8 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 })
 @RunWith(SpringJUnit4ClassRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@ActiveProfiles(POSTGRES)
-public class UserMealServiceTest {
-    private static final LoggerWrapper LOG = LoggerWrapper.get(UserMealServiceTest.class);
+public abstract class BaseUserMealServiceTest {
+    private static final LoggerWrapper LOG = LoggerWrapper.get(BaseUserMealServiceTest.class);
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -76,10 +76,11 @@ public class UserMealServiceTest {
         MATCHER.assertCollectionEquals(Arrays.asList(created, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1), service.getAll(USER_ID));
     }
 
-    @Test
+    @Test(expected = LazyInitializationException.class)
     public void testGet() throws Exception {
         UserMeal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
         MATCHER.assertEquals(ADMIN_MEAL, actual);
+        actual.getUser().getId();
     }
 
     @Test
@@ -113,4 +114,16 @@ public class UserMealServiceTest {
         MATCHER.assertCollectionEquals(Arrays.asList(MEAL3, MEAL2, MEAL1),
                 service.getBetweenDates(LocalDate.of(2015, Month.MAY, 30), LocalDate.of(2015, Month.MAY, 30), USER_ID));
     }
+    @Test
+    public void testGetWithUser() throws Exception {
+        UserMeal actual = service.getWithUser(ADMIN_MEAL_ID, ADMIN_ID);
+        MATCHER.assertEquals(ADMIN_MEAL, actual);
+        UserTestData.MATCHER.assertEquals(ADMIN, actual.getUser());
+    }
+    @Test
+    public void testGetWithUserNotFound() throws Exception {
+        thrown.expect(NotFoundException.class);
+        UserMeal actual = service.getWithUser(ADMIN_MEAL_ID, USER_ID);
+    }
+
 }

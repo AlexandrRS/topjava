@@ -1,7 +1,10 @@
 package ru.javawebinar.topjava.web;
 
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 import ru.javawebinar.topjava.LoggerWrapper;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.util.TimeUtil;
@@ -18,6 +21,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
+import static ru.javawebinar.topjava.Profiles.*;
+
+
 /**
  * User: gkislin
  * Date: 19.08.2014
@@ -25,13 +31,19 @@ import java.util.Objects;
 public class MealServlet extends HttpServlet {
     private static final LoggerWrapper LOG = LoggerWrapper.get(MealServlet.class);
 
-    private ConfigurableApplicationContext springContext;
+    //private ConfigurableApplicationContext springContext;
+    private GenericXmlApplicationContext springContext;
     private UserMealRestController mealController;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        springContext = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml");
+        //springContext = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml");
+        springContext = new GenericXmlApplicationContext();
+        springContext.getEnvironment().setActiveProfiles(POSTGRES, DATAJPA);
+        springContext.load("spring/spring-app.xml", "spring/spring-db.xml");
+        springContext.refresh();
+
         mealController = springContext.getBean(UserMealRestController.class);
     }
 

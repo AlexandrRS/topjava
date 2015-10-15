@@ -71,4 +71,13 @@ public class JpaUserMealRepositoryImpl implements UserMealRepository {
                 .setParameter("startDate", startDate)
                 .setParameter("endDate", endDate).getResultList();
     }
+
+    @Override
+    public UserMeal getWithUser(int id, int userId) {
+        List<UserMeal> userMeals = em.createQuery("SELECT um FROM UserMeal um JOIN FETCH um.user user WHERE um.id = :id AND user.id = :user_id", UserMeal.class)
+                .setParameter("id", id)
+                .setParameter("user_id", userId)
+                .getResultList();
+        return DataAccessUtils.singleResult(userMeals);
+    }
 }
