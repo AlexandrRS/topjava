@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,12 +8,13 @@ import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.UserTestData.*;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
-import ru.javawebinar.topjava.repository.JpaUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.UserTestData.*;
 
@@ -21,13 +23,9 @@ abstract public class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     protected UserService service;
 
-    @Autowired
-    protected JpaUtil jpaUtil;
-
     @Before
     public void setUp() throws Exception {
         service.evictCache();
-        jpaUtil.clear2ndLevelHibernateCache();
     }
 
     @Test
@@ -36,6 +34,7 @@ abstract public class AbstractUserServiceTest extends AbstractServiceTest {
         User created = service.save(tu.asUser());
         tu.setId(created.getId());
         MATCHER.assertCollectionEquals(Arrays.asList(ADMIN, tu, USER), service.getAll());
+        Assert.assertEquals(true, created.getRoles().containsAll(service.get(created.getId()).getRoles()));
     }
 
     @Test(expected = DataAccessException.class)
@@ -56,8 +55,10 @@ abstract public class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void testGet() throws Exception {
-        User user = service.get(USER_ID);
-        MATCHER.assertEquals(USER, user);
+        User user = service.get(ADMIN_ID);
+        MATCHER.assertEquals(ADMIN, user);
+        Assert.assertEquals(true, ADMIN.getRoles().containsAll(user.getRoles()));
+
     }
 
     @Test(expected = NotFoundException.class)
@@ -69,6 +70,7 @@ abstract public class AbstractUserServiceTest extends AbstractServiceTest {
     public void testGetByEmail() throws Exception {
         User user = service.getByEmail("user@yandex.ru");
         MATCHER.assertEquals(USER, user);
+        Assert.assertEquals(true, USER.getRoles().containsAll(user.getRoles()));
 
     }
 
