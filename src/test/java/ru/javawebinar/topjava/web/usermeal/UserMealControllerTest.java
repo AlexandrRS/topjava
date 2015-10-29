@@ -5,8 +5,6 @@ import org.springframework.http.MediaType;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.web.AbstractUserMealControllerTest;
 
-import java.time.LocalDateTime;
-
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -26,13 +24,13 @@ public class UserMealControllerTest extends AbstractUserMealControllerTest {
     @Test
     public void testCreateUserMeal() throws Exception {
 
-        UserMeal created = new UserMeal(LocalDateTime.parse("2015-10-27T10:15:30"), "Ужин", 1000);
+        UserMeal created = getCreated();
         mockMvc.perform(post("/meals", model().attribute("meal", new UserMeal()))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("id", "")
-                .param("dateTime", "2015-10-27T10:15:30")
-                .param("description", "Ужин")
-                .param("calories", "1000")                        )
+                .param("dateTime", created.getDateTime().toString())
+                .param("description", created.getDescription())
+                .param("calories", String.valueOf(created.getCalories())))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:meals"))

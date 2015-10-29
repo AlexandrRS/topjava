@@ -50,8 +50,12 @@ public class UserMealRestController extends AbstractUserMealController {
     }
 
     @RequestMapping(path = "/filter", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserMealWithExceed> getBetween(@RequestParam("startDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDateTime,
-                                               @RequestParam("endDateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDateTime) {
+    public List<UserMealWithExceed> getBetween(@RequestParam("startDateTime")
+                                                   //@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                                   LocalDateTime startDateTime,
+                                               @RequestParam("endDateTime")
+                                               //@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                               LocalDateTime endDateTime) {
         return super.getBetween(startDateTime.toLocalDate(), startDateTime.toLocalTime(), endDateTime.toLocalDate(), endDateTime.toLocalTime());
     }
 }
