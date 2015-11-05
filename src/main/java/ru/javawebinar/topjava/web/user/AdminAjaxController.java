@@ -24,6 +24,15 @@ public class AdminAjaxController extends AbstractUserController {
         super.delete(id);
     }
 
+    @RequestMapping(value = "/{id}/inverse_is_enabled", method = RequestMethod.POST)
+    public void inverseIsEnable(@PathVariable("id") int id) {
+        if (id != 0) {
+            User user = super.get(id);
+            user.setEnabled(!user.isEnabled());
+            super.update(user, id);
+        }
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     public void update(@RequestParam("id") int id,
                        @RequestParam("name") String name,

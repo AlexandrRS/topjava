@@ -6,7 +6,22 @@ function makeEditable() {
     });
 
     $('.delete').click(function () {
-        deleteRow($(this).attr("id"));
+        var itemId = this.parentNode.parentNode.id;
+        debugger;
+        deleteRow(itemId);
+    });
+
+    $("[name = userIsEnabled]").change(function () {
+        var itemId = this.parentNode.parentNode.id;
+        var destUrl = ajaxUrl + itemId + '/inverse_is_enabled';
+        debugger;
+        $.ajax({
+            url: destUrl,
+            type: 'POST',
+            success: function () {
+                successNoty('Changed');
+            }
+        });
     });
 
     $('#detailsForm').submit(function () {
@@ -31,12 +46,24 @@ function deleteRow(id) {
 }
 
 function updateTable() {
-    $.get(ajaxUrl, function (data) {
-        oTable_datatable.fnClearTable();
+
+    var destUrl;
+    if (ajaxUrl == 'ajax/meals/') {
+        destUrl = ajaxUrl +
+            "filter?startDate=" + $("[name = startDate]").val() +
+            "&startTime=" + $("[name = startTime]").val()  +
+            "&endDate=" + $("[name = endDate]").val() +
+            "&endTime=" + $("[name = endTime]").val();
+    } else {
+        destUrl = ajaxUrl;
+    }
+    debugger;
+    $.get(destUrl, function (data) {
+        oTable_datatable.clear();
         $.each(data, function (key, item) {
-            oTable_datatable.fnAddData(item);
+            oTable_datatable.row.add(item);
         });
-        oTable_datatable.fnDraw();
+        oTable_datatable.draw();
     });
 }
 

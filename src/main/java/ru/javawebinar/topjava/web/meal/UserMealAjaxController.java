@@ -5,8 +5,11 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.to.UserMealWithExceed;
+import ru.javawebinar.topjava.util.TimeUtil;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -21,10 +24,24 @@ public class UserMealAjaxController extends AbstractUserMealController {
         super.delete(id);
     }
 
-    @Override
+   /* @Override
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserMealWithExceed> getAll() {
         return super.getAll();
+    }*/
+
+    @Override
+    @RequestMapping(value = "/filter", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<UserMealWithExceed> getBetween(
+            @RequestParam("startDate") LocalDate startDate,
+            @RequestParam("startTime") LocalTime startTime,
+            @RequestParam("endDate") LocalDate endDate,
+            @RequestParam("endTime") LocalTime endTime
+    ) {
+        return super.getBetween(startDate == null? TimeUtil.MIN_DATE : startDate,
+                startTime == null? LocalTime.MIN : startTime,
+                endDate == null? TimeUtil.MAX_DATE : endDate,
+                endTime == null? LocalTime.MAX : endTime);
     }
 
     @RequestMapping(method = RequestMethod.POST)
