@@ -12,8 +12,16 @@
 
     <security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled"/>
 
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+        <property name="defaultLocale" value="en" />
+    </bean>
+
     <mvc:interceptors>
         <bean class="ru.javawebinar.topjava.web.interceptor.ModelInterceptor"/>
+        <!--Interceptor for locale change-->
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property name="paramName" value="lang"></property>
+        </bean>
     </mvc:interceptors>
 
     <mvc:annotation-driven conversion-service="conversionService">
@@ -69,5 +77,6 @@
           p:cacheSeconds="60"
           p:defaultEncoding="UTF-8">
         <property name="basenames" value="file:///#{systemEnvironment['TOPJAVA_ROOT']}/config/messages/app"/>
+        <property name="fallbackToSystemLocale" value="false"/>
     </bean>
 </beans>

@@ -6,8 +6,8 @@
 
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
+        <jsp:include page="langChanger.jsp"/>
         <a href="<c:url value='/meals'/>" class="navbar-brand"><fmt:message key="app.title"/></a>
-
         <div class="collapse navbar-collapse">
             <form:form class="navbar-form navbar-right" action="logout" method="post">
                 <sec:authorize access="isAuthenticated()">
